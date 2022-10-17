@@ -31,6 +31,7 @@ export default class Watch extends THREE.Group {
             this.cityIndex = 0;
         }
 
+
         let geometry = new THREE.CircleGeometry(radius, 60);
         let material = new THREE.MeshBasicMaterial(dialColor);
         this.dial = new THREE.Mesh(geometry, material);
@@ -39,29 +40,75 @@ export default class Watch extends THREE.Group {
         const radius0 = 0.85 * radius;
         const radius1 = 0.90 * radius;
         const radius2 = 0.95 * radius; 
+
         let points = [];
-        for(let i = 0, t = 0; i<12; i++, t += Math.PI/6){
-            let x = radius0 * Math.cos(t);
-            let y = radius0 * Math.sin(t);
-            let z = 0;
-            points.push(new THREE.Vector3(x,y,z));
+        // for(let i = 0, t = 0; i<12; i++, t += Math.PI/6){
+        //     let x = radius0 * Math.cos(t);
+        //     let y = radius0 * Math.sin(t);
+        //     let z = 0;
+        //     points.push(new THREE.Vector3(x,y,z));
             
-            x = radius2 * Math.cos(t);
-            y = radius2 * Math.sin(t);
-            points.push(new THREE.Vector3(x,y,z));
-        }
-        for(let i = 0, t = 0; i<60; i++, t += Math.PI/30){
-            let x = radius1 * Math.cos(t);
-            let y = radius1 * Math.sin(t);
-            let z = 0;
-            points.push(new THREE.Vector3(x,y,z));
-            
-            x = radius2 * Math.cos(t);
-            y = radius2 * Math.sin(t);
-            points.push(new THREE.Vector3(x,y,z));
-        }
+        //     x = radius2 * Math.cos(t);
+        //     y = radius2 * Math.sin(t);
+        //     points.push(new THREE.Vector3(x,y,z));
+        // }
+        const curve0 = new THREE.EllipseCurve(
+            0,  0,            // ax, aY
+            radius0, radius0,           // xRadius, yRadius
+            0,  2 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        const curve1 = new THREE.EllipseCurve(
+            0,  0,            // ax, aY
+            radius1, radius1,           // xRadius, yRadius
+            0,  2 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        const curve2 = new THREE.EllipseCurve(
+            0,  0,            // ax, aY
+            radius2, radius2,           // xRadius, yRadius
+            0,  2 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
         
-        geometry = new THREE.BufferGeometry().setFromPoints(points);
+        let points0 = curve0.getPoints(12);
+        let points1 = curve1.getPoints(60);
+        let points2 = curve2.getPoints(60);
+
+        let points_merged = [];
+
+        for(let i = 0, c0 = 0, c1 = 0, c2 = 0; i < 60; i++){
+            if(i % 5 == 0){
+                points_merged.push(points0[c0]);
+                c0++;
+                points_merged.push(points2[c2]);
+
+                c2++;
+                c1++;
+            }
+            else{
+                points_merged.push(points1[c1]);
+                c1++;
+                points_merged.push(points2[c2]);
+                c2++;
+            }
+        }
+
+        // for(let i = 0, t = 0; i<60; i++, t += Math.PI/30){
+        //     let x = radius1 * Math.cos(t);
+        //     let y = radius1 * Math.sin(t);
+        //     let z = 0;
+        //     points.push(new THREE.Vector3(x,y,z));
+            
+        //     x = radius2 * Math.cos(t);
+        //     y = radius2 * Math.sin(t);
+        //     points.push(new THREE.Vector3(x,y,z));
+        // }
+        
+        geometry = new THREE.BufferGeometry().setFromPoints(points_merged);
         material = new THREE.LineBasicMaterial({
             color: markersColor
         });
