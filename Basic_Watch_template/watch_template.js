@@ -42,16 +42,6 @@ export default class Watch extends THREE.Group {
         const radius2 = 0.95 * radius; 
 
         let points = [];
-        // for(let i = 0, t = 0; i<12; i++, t += Math.PI/6){
-        //     let x = radius0 * Math.cos(t);
-        //     let y = radius0 * Math.sin(t);
-        //     let z = 0;
-        //     points.push(new THREE.Vector3(x,y,z));
-            
-        //     x = radius2 * Math.cos(t);
-        //     y = radius2 * Math.sin(t);
-        //     points.push(new THREE.Vector3(x,y,z));
-        // }
         const curve0 = new THREE.EllipseCurve(
             0,  0,            // ax, aY
             radius0, radius0,           // xRadius, yRadius
@@ -96,18 +86,6 @@ export default class Watch extends THREE.Group {
                 c2++;
             }
         }
-
-        // for(let i = 0, t = 0; i<60; i++, t += Math.PI/30){
-        //     let x = radius1 * Math.cos(t);
-        //     let y = radius1 * Math.sin(t);
-        //     let z = 0;
-        //     points.push(new THREE.Vector3(x,y,z));
-            
-        //     x = radius2 * Math.cos(t);
-        //     y = radius2 * Math.sin(t);
-        //     points.push(new THREE.Vector3(x,y,z));
-        // }
-        
         geometry = new THREE.BufferGeometry().setFromPoints(points_merged);
         material = new THREE.LineBasicMaterial({
             color: markersColor
@@ -116,12 +94,24 @@ export default class Watch extends THREE.Group {
         this.add(this.markers); 
 
         /* To-do #3: Create the hour hand (a line segment) with length 0.5 * radius, pointing at 0.0 radians (the positive X-semiaxis) and color handsHMColor*/
-        points = [];
-        points.push(new THREE.Vector3(0, 0, 0));
-        points.push(new THREE.Vector3(0.5 * radius, 0, 0));
-        geometry = new THREE.BufferGeometry().setFromPoints(points);
-        material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
-        this.handH = new THREE.LineSegments(geometry, material);
+        // points = [];
+        // points.push(new THREE.Vector3(0, 0.025 * radius, 0));
+        // points.push(new THREE.Vector3(-0.1 * radius, 0, 0));
+        // points.push(new THREE.Vector3(0, -0.025 * radius, 0));
+        // points.push(new THREE.Vector3(0.5 * radius, 0, 0));
+        geometry = new THREE.BufferGeometry();
+        let vertices = new Float32Array( [
+            0.0, 0.025 * radius,  0.0,
+            -0.1 * radius, 0.0,  0.0,
+            0.0, -0.025 * radius,  0.0,
+            0.0, -0.025 * radius,  0.0,
+            0.5 * radius, 0.0, 0.0,
+            0.0, 0.025 * radius,  0.0,
+        ] );
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3) );
+        material = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
+        let mesh = new THREE.Mesh( geometry, material );
+        this.handH = mesh
         this.add(this.handH);
 
         /* To-do #4: Create the minute hand (a line segment) with length 0.7 * radius, pointing at 0.0 radians (the positive X-semiaxis) and color handsHMColor*/
