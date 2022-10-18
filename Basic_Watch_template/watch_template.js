@@ -115,11 +115,19 @@ export default class Watch extends THREE.Group {
         this.add(this.handH);
 
         /* To-do #4: Create the minute hand (a line segment) with length 0.7 * radius, pointing at 0.0 radians (the positive X-semiaxis) and color handsHMColor*/
-        points = [];
-        points.push(new THREE.Vector3(0, 0, 0));
-        points.push(new THREE.Vector3(0.7 * radius, 0, 0));
-        geometry = new THREE.BufferGeometry().setFromPoints(points);
-        this.handM = new THREE.LineSegments(geometry, material);
+        geometry = new THREE.BufferGeometry();
+        vertices = new Float32Array( [
+            0.0, 0.035 * radius,  0.0,
+            -0.14 * radius, 0.0,  0.0,
+            0.0, -0.035 * radius,  0.0,
+            0.0, -0.035 * radius,  0.0,
+            0.7 * radius, 0.0, 0.0,
+            0.0, 0.035 * radius,  0.0,
+        ] );
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3) );
+        material = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
+        mesh = new THREE.Mesh( geometry, material );
+        this.handM = mesh
         this.add(this.handM);
 
         // Create the second hand (a line segment and a circle) pointing at 0.0 radians (the positive X-semiaxis)
