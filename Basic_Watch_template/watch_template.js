@@ -134,17 +134,30 @@ export default class Watch extends THREE.Group {
         this.handS = new THREE.Group();
 
         // Create the line segment
-        points = [new THREE.Vector2(0.0, 0.0), new THREE.Vector2(0.8 * radius, 0.0)];
+        points = [];
+        points.push(new THREE.Vector2(-0.24 * radius, 0.0));
+        points.push(new THREE.Vector2(-0.16 * radius, 0.0));
+        points.push(new THREE.Vector2(-0.08 * radius, 0.0));
+        points.push(new THREE.Vector2(0.8 * radius, 0.0));
+
         geometry = new THREE.BufferGeometry().setFromPoints(points);
         material = new THREE.LineBasicMaterial({ color: handSColor });
-        let handS = new THREE.LineSegments(geometry, material);
-        this.handS.add(handS);
+        let handS_buffer = new THREE.LineSegments(geometry, material);
+        this.handS.add(handS_buffer);
 
         // Create the circle
-        geometry = new THREE.CircleGeometry(0.03 * radius, 16);
         material = new THREE.MeshBasicMaterial({ color: handSColor });
-        handS = new THREE.Mesh(geometry, material);
-        this.handS.add(handS);
+        geometry = new THREE.CircleGeometry(0.03 * radius, 16);
+        handS_buffer = new THREE.Mesh(geometry, material);
+        this.handS.add(handS_buffer);
+
+        //Create the circumference
+        let curve = new THREE.EllipseCurve(-0.12 * radius, 0, 0.04 * radius, 0.04 * radius, 0, 2 * Math.PI, false, 0);
+        points = curve.getPoints(25);
+        geometry = new THREE.BufferGeometry().setFromPoints(points);
+        material = new THREE.LineBasicMaterial({color: handSColor});
+        handS_buffer = new THREE.Line(geometry, material);
+        this.handS.add(handS_buffer);
 
         this.add(this.handS);
 
