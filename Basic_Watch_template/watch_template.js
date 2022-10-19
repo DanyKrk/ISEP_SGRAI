@@ -169,17 +169,28 @@ export default class Watch extends THREE.Group {
         // Start by getting a "container" <div> element with the top-left corner at the center of the viewport (the origin of the coordinate system)
         const container = document.getElementById("container");
 
-        // Then create a "label" <div> element and append it as a child of "container"
-        this.label = document.createElement("div");
+        // Then create a "label" <select> element and append it as a child of "container"
+        this.label = document.createElement("select");
         this.label.style.position = "absolute";
         this.label.style.left = (50.0 * center.x - 30.0 * radius).toString() + "vmin";
         this.label.style.top = (-50.0 * center.y + 54.0 * radius).toString() + "vmin";
         this.label.style.width = (60.0 * radius).toString() + "vmin";
-        this.label.style.fontSize = (8.0 * radius).toString() + "vmin";
+        this.label.style.fontSize = (6.0 * radius).toString() + "vmin";
         this.label.style.backgroundColor = "#" + new THREE.Color(nameBackgroundColor).getHexString();
         this.label.style.color = "#" + new THREE.Color(nameForegroundColor).getHexString();
-        this.label.innerHTML = this.cities[this.cityIndex].name;
+        for (var i = 0; i < this.cities.length; i++) {
+            var option = document.createElement("option");
+            option.value = i;
+            option.text = this.cities[i].name;
+            this.label.appendChild(option);
+        }
+        this.label.selectedIndex = this.cityIndex;
+        this.label.addEventListener("change", value => this.change_city(this.label.selectedIndex));
         container.appendChild(this.label);
+    }
+
+    change_city(index){
+        this.cityIndex = index;
     }
 
     update() {
