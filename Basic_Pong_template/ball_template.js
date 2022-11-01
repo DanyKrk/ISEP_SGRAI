@@ -49,10 +49,10 @@ export default class Ball extends THREE.Mesh {
                 - (x0, y0) are the ball's current center coordinates
                 - r = (ball speed * elapsed time) is the distance covered by the ball
                 - t is the ball direction (expressed in radians)
-
-        const coveredDistance = ...;
-        const centerIncrement = new THREE.Vector2(...);
-        this.center.add(...); */
+        */
+        const coveredDistance = this.speed * deltaT;
+        const centerIncrement = new THREE.Vector2(coveredDistance * Math.cos(this.direction), coveredDistance * Math.sin(this.direction));
+        this.center.add(centerIncrement); 
 
         /* To-do #11 - Check if the ball hit player 1 racket
             - the hit depends on the ball direction (it must be moving to the left), ball position, ball radius, player 1 racket's position and dimension
@@ -97,10 +97,10 @@ export default class Ball extends THREE.Mesh {
                 this.center.y (the ball's center Y-position)
                 this.radius (the ball's radius)
                 this.table.halfSize.y (the table's half Y-dimension)
-
-        if (... && ... || // The ball is moving down and hit the bottom line
-            ... && ...) { // The ball is moving up and hit the top line
-            this.direction = ...; // The ball rebounds
+        */
+        if (centerIncrement.y < 0 && this.center.y - this.radius + centerIncrement < -this.table.halfsize.y || // The ball is moving down and hit the bottom line
+            centerIncrement.y > 0 && this.center.y + this.radius + centerIncrement > this.table.halfsize.y) { // The ball is moving up and hit the top line
+            this.direction = -this.direction; // The ball rebounds
             if (centerIncrement.x < 0.0) {
                 this.direction += 2.0 * Math.PI; // This is to ensure that the ball direction stays within the interval 0.0 <= direction < 2.0 * π (pi)
             }
